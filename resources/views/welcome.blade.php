@@ -24,7 +24,7 @@
 
                             <div class="row mb-3">
                                 <label for="title" class="col-md-4 col-form-label text-md-end">
-                                    {{ __('Title') }}
+                                    {{ __('Message Title') }} <span class="text-danger">*</span>
                                 </label>
 
                                 <div class="col-md-6">
@@ -39,20 +39,20 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="password" class="col-md-4 col-form-label text-md-end">
-                                    {{ __('Description') }}
+                                <label for="body" class="col-md-4 col-form-label text-md-end">
+                                    {{ __('Message Body') }} <span class="text-danger">*</span>
                                 </label>
 
                                 <div class="col-md-6">
                                     <textarea 
-                                        name="description" 
-                                        id="description" 
-                                        class="form-control @error('description') is-invalid @enderror" 
+                                        name="body" 
+                                        id="body" 
+                                        class="form-control @error('body') is-invalid @enderror" 
                                         cols="30" 
                                         rows="10"
                                         required></textarea>
 
-                                    @error('description')
+                                    @error('body')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -61,14 +61,14 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="image" class="col-md-4 col-form-label text-md-end">
-                                    {{ __('Image') }}
+                                <label for="data" class="col-md-4 col-form-label text-md-end">
+                                    {{ __('Data (JSON)') }}
                                 </label>
 
                                 <div class="col-md-6">
-                                    <input type="file" class="form-control @error('image') is-invalid @enderror" name="image" value="{{ old('image') }}" required>
+                                    <input id="data" type="data" class="form-control @error('data') is-invalid @enderror" name="data" value="{{ old('data') }}">
 
-                                    @error('image')
+                                    @error('data')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
@@ -83,9 +83,8 @@
 
                                 <div class="col-md-6">
                                     <select class="form-control" id="notification_type" name="notification_type">
-                                        <option value="1">All User</option>
-                                        <option value="2">Topic</option>
-                                        <option value="3">Individual User</option>
+                                        <option value="1">Individual User</option>
+                                        <option value="2">Channel</option>
                                     </select>
 
                                     @error('notification_type')
@@ -97,13 +96,13 @@
                             </div>
 
                             <div id="userDropdown">
-                                <div class="row mb-3">
+                                 <div class="row mb-3">
                                     <label for="user_id" class="col-md-4 col-form-label text-md-end">
-                                        {{ __('Select User') }}
+                                        {{ __('To (Individual user)') }} <span class="text-danger">*</span>
                                     </label>
 
                                     <div class="col-md-6">
-                                        <select class="form-control" id="user_id" name="user_id">
+                                        <select class="form-control" id="user_id" name="user_id" required>
                                             @foreach ($users as $user)
                                                 <option value="{{ $user->id }}">{{ $user->name }} ({{$user->email }})</option>
                                             @endforeach
@@ -115,9 +114,30 @@
                                             </span>
                                         @enderror
                                     </div>
-                                </div>
+                                </div>    
                             </div>
 
+                            <div id="channelDropdown">
+                                <div class="row mb-3">
+                                    <label for="channel" class="col-md-4 col-form-label text-md-end">
+                                        {{ __('Channel') }} <span class="text-danger">*</span>
+                                    </label>
+
+                                    <div class="col-md-6">
+                                        <select class="form-control" id="channel" name="channel" required>
+                                            <option value="All">All</option>
+                                            <option value="Android">Android</option>
+                                            <option value="IOS">IOS</option>
+                                        </select>
+
+                                        @error('channel')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="row mb-0">
                                 <div class="col-md-8 offset-md-4">
@@ -138,12 +158,14 @@
 
         <script>
             $(function () {
-                $("#userDropdown").hide();
+                $("#channelDropdown").hide();
 
                 $('#notification_type').change(function () {
-                    if ($(this).val() == 3) {
+                    if ($(this).val() == 1) {
                         $("#userDropdown").show();
+                        $("#channelDropdown").hide();
                     } else {
+                        $("#channelDropdown").show();
                         $("#userDropdown").hide();
                     }
                 });
