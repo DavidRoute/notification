@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\NotificationRequest;
 use App\Models\User;
+use App\Models\Notification;
 use ExpoSDK\Expo;
 use ExpoSDK\ExpoMessage;
 
@@ -20,6 +21,12 @@ class NotificationController extends Controller
     public function store(NotificationRequest $request) 
     {
         $data = $request->validated();
+
+        Notification::create([
+            'title' => $request->title,
+            'body'  => $request->body,
+            'data'  => $request->data
+        ]);
 
         $messageArr = [
             'title' => $request->title,

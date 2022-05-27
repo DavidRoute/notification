@@ -50,7 +50,7 @@
                                         class="form-control @error('body') is-invalid @enderror" 
                                         cols="30" 
                                         rows="10"
-                                        required></textarea>
+                                        required>{{ old('body') }}</textarea>
 
                                     @error('body')
                                         <span class="invalid-feedback" role="alert">
