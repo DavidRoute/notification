@@ -42,4 +42,26 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Relationships.
+     */
+    public function channels() 
+    {
+        return $this->belongsToMany(Channel::class, 'subscribe_channel')->withTimestamps();
+    }
+
+
+    /**
+     * Helper methods.
+     */
+    public function subscribe(Channel $channel) 
+    {
+        return $this->channels()->attach($channel);
+    }
+
+    public function unsubscribe(Channel $channel) 
+    {
+        return $this->channels()->detach($channel);
+    }
 }
