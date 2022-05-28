@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\NotificationRequest;
 use App\Models\User;
+use App\Models\Channel;
 use App\Models\Notification;
 use ExpoSDK\Expo;
 use ExpoSDK\ExpoMessage;
@@ -14,8 +15,9 @@ class NotificationController extends Controller
     public function index() 
     {
         $users = User::latest('id')->get();
+        $channels = Channel::all();
 
-        return view('welcome', compact('users'));
+        return view('welcome', compact('users', 'channels'));
     }
 
     public function store(NotificationRequest $request) 
@@ -50,9 +52,9 @@ class NotificationController extends Controller
         else {
             $expo = Expo::driver('file');
 
-            $channel = $request->channel;
+            $channel = Channel::findOrFail($request->channel_id);
 
-            $response = $expo->send($message)->toChannel($channel)->push();
+            $response = $expo->send($message)->toChannel($channel->name)->push();
 
             return $response->getData();
         }

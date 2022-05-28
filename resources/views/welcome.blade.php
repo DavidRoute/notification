@@ -119,18 +119,18 @@
 
                             <div id="channelDropdown">
                                 <div class="row mb-3">
-                                    <label for="channel" class="col-md-4 col-form-label text-md-end">
+                                    <label for="channel_id" class="col-md-4 col-form-label text-md-end">
                                         {{ __('Channel') }} <span class="text-danger">*</span>
                                     </label>
 
                                     <div class="col-md-6">
-                                        <select class="form-control" id="channel" name="channel" required>
-                                            <option value="All">All</option>
-                                            <option value="Android">Android</option>
-                                            <option value="IOS">IOS</option>
+                                        <select class="form-control" id="channel_id" name="channel_id" required>
+                                            @foreach ($channels as $channel)
+                                                <option value="{{ $channel->id }}">{{ $channel->name }}</option>
+                                            @endforeach
                                         </select>
 
-                                        @error('channel')
+                                        @error('channel_id')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>

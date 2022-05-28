@@ -29,8 +29,8 @@ class NotificationRequest extends FormRequest
             'body'      => ['required', 'string'],
             'data'      => ['nullable', 'json'],
             'notification_type' => ['required', Rule::in([1, 2])],
-            'user_id'   => [Rule::requiredIf($this->notification_type == 1), 'integer'],
-            'channel'   => [Rule::requiredIf($this->notification_type == 2), 'string']
+            'user_id'   => [Rule::requiredIf($this->notification_type == 1), 'exists:users,id'],
+            'channel_id'   => [Rule::requiredIf($this->notification_type == 2), 'exists:channels,id']
         ];
     }
 }
