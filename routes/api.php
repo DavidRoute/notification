@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserDeviceTokenController;
+use App\Http\Controllers\Api\ChannelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/users/device-token', [UserDeviceTokenController::class, 'store']);
+
+Route::get('/channels', [ChannelController::class, 'index']);

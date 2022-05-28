@@ -12,4 +12,12 @@ class Channel extends Model
     protected $fillable = [
         'name'
     ];
+
+    /**
+     * Query scopes.
+     */
+    public function scopeIsNotDefault($query) 
+    {
+        $query->where('is_default', false);
+    }
 }
