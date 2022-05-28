@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('channels', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
+            $table->boolean('is_default')->default(false);
             $table->timestamps();
         });
     }

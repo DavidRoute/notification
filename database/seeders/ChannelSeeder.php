@@ -15,14 +15,30 @@ class ChannelSeeder extends Seeder
      */
     public function run()
     {
-        $channels = [
-            'all',
-            'android',
-            'ios'
+        $defaultChannels = [
+            'All',
+            'Android',
+            'IOS'
         ];
 
+        $channels = [
+            'Covid',
+            'Life',
+            'Care',
+            'Car',
+        ];
+
+        foreach ($defaultChannels as $key => $value) {
+            Channel::create([
+                'name'       => $value,
+                'is_default' => true
+            ]);
+        }
+
         foreach ($channels as $key => $value) {
-            Channel::create(['name' => $value]);
+            Channel::create([
+                'name'       => $value,
+            ]);
         }
     }
 }
