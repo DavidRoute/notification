@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('channel_id');
+            $table->boolean('active')->default(true);
             $table->timestamps();
 
             $table->unique(['user_id', 'channel_id']);

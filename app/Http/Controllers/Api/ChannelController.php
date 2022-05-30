@@ -10,20 +10,6 @@ use ExpoSDK\Expo;
 
 class ChannelController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            $this->authUser = auth()->loginUsingId(11);
-
-            return $next($request);
-        });
-    }
-
     public function index() 
     {
         $perPage = request('per_page', 15);
@@ -35,7 +21,7 @@ class ChannelController extends Controller
 
     public function subscribe(Channel $channel) 
     {
-        $authUser = $this->authUser;
+        $authUser = auth()->user();
 
         if ($authUser->channels->contains($channel)) {
             return response()->json(['message' => 'Already subscribed this channel.']);
@@ -43,7 +29,7 @@ class ChannelController extends Controller
 
         $authUser->subscribe($channel);
 
-        // Expo channel subscriptions
+        // Expo specific channel subscriptions
         $expo = Expo::driver('file');
         $recipients = [$authUser->device_token];
 
@@ -54,7 +40,7 @@ class ChannelController extends Controller
 
     public function unsubscribe(Channel $channel) 
     {
-        $authUser = $this->authUser;
+        $authUser = auth()->user();
 
         if (! $authUser->channels->contains($channel)) {
             return response()->json(['message' => 'Channel did not subscribe yet.']);
@@ -62,12 +48,50 @@ class ChannelController extends Controller
         
         $authUser->unsubscribe($channel);
 
-        // Expo channel subscriptions
+        // Expo specific channel unsubscriptions
         $expo = Expo::driver('file');
         $recipients = [$authUser->device_token];
 
         $expo->unsubscribe($channel->name, $recipients);
 
         return response()->json(['message' => 'Successfully unsubscribed']);
+    }
+
+    public function allUnsubscribe() 
+    {
+        $authUser = auth()->user();
+
+        $expo = Expo::driver('file');
+        $recipients = [$authUser->device_token];
+
+        $authUser->allUnsubscribe();
+
+        // Expo all channel unsubscriptions
+        $expo->subscribe('All', $recipients);
+        $expo->subscribe($authUser->os_type, $recipients);
+        foreach ($authUser->channels as $channel) {
+            $expo->unsubscribe($channel->name, $recipients);
+        }
+
+        return response()->json(['message' => 'Successfully unsubscribed']);
+    }
+
+    public function resubscribe() 
+    {
+        $authUser = auth()->user();
+
+        $expo = Expo::driver('file');
+        $recipients = [$authUser->device_token];
+
+        $authUser->resubscribe();
+
+        // Expo channel resubscriptions
+        $expo->subscribe('All', $recipients);
+        $expo->subscribe($authUser->os_type, $recipients);
+        foreach ($authUser->channels as $channel) {
+            $expo->subscribe($channel->name, $recipients);
+        }
+
+        return response()->json(['message' => 'Successfully resubscribed']);
     }
 }

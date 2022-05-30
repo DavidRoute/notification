@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'device_token',
+        'os_type',
     ];
 
     /**
@@ -63,5 +64,15 @@ class User extends Authenticatable
     public function unsubscribe(Channel $channel) 
     {
         return $this->channels()->detach($channel);
+    }
+
+    public function allUnsubscribe() 
+    {
+        return $this->channels()->update(['active' => false]);
+    }
+
+    public function resubscribe() 
+    {
+        return $this->channels()->update(['active' => true]);
     }
 }

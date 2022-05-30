@@ -9,29 +9,16 @@ use ExpoSDK\Expo;
 
 class UserDeviceTokenController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            $this->authUser = auth()->loginUsingId(11);
-
-            return $next($request);
-        });
-    }
-
     public function store(Request $request) 
     {
         $request->validate([
             'device_token' => ['required', 'string'],
-            'os_type' => [ 'required', Rule::in(['android', 'ios']) ]
+            'os_type' => [ 'required', Rule::in(['Android', 'IOS']) ]
         ]);
 
-        $authUser = $this->authUser;
+        $authUser = auth()->user();
         $authUser->device_token = $request->device_token;
+        $authUser->os_type = $request->os_type;
         $authUser->save();
 
         $expo = Expo::driver('file');
@@ -39,7 +26,7 @@ class UserDeviceTokenController extends Controller
         $recipients = [$authUser->device_token];
 
         // the channel will be created automatically if it doesn't already exist
-        $expo->subscribe('all', $recipients);
+        $expo->subscribe('All', $recipients);
         $expo->subscribe($request->os_type, $recipients);
 
         return response()->json(['message' => 'Success']);
